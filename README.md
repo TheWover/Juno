@@ -2,7 +2,7 @@
 
 [![Build status](https://ci.appveyor.com/api/projects/status/81cs42eqbvnfcumx?svg=true)](https://ci.appveyor.com/project/Akaion/juno)
 
-A Windows managed function detouring library written in C#.
+A Windows managed function detouring library written in C# that supports both x86 and x64 detours.
 
 ----
 
