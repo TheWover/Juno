@@ -23,7 +23,7 @@ namespace Juno.Tests
     
     public class Tests
     {
-        private readonly FunctionDetour<TestClass1, TestClass2> _functionDetour;
+        private readonly GenericFunctionDetour<TestClass1, TestClass2> _functionDetour;
         
         private readonly TestClass1 _testClass;
         
@@ -35,7 +35,7 @@ namespace Juno.Tests
         {
             // Initialize a function detour instance
             
-            _functionDetour = new FunctionDetour<TestClass1, TestClass2>("TestMethod", "TestMethod");
+            _functionDetour = new GenericFunctionDetour<TestClass1, TestClass2>("TestMethod", "TestMethod");
             
             // Initialize a test class
             
@@ -49,7 +49,7 @@ namespace Juno.Tests
         }
         
         [Fact]
-        public void TestAddDetour()
+        public void TestDetour()
         {
             // Add the detour
             
@@ -60,20 +60,6 @@ namespace Juno.Tests
             // Remove the detour
             
             _functionDetour.RemoveDetour();
-        }
-        
-        [Fact]
-        public void TestRemoveDetour()
-        {
-            // Add the detour
-            
-            _functionDetour.AddDetour();
-            
-            // Remove the detour
-            
-            _functionDetour.RemoveDetour();
-            
-            Assert.Equal(15, _testClass.TestMethod(_testVariable1, _testVariable2));
         }
     }
 }
