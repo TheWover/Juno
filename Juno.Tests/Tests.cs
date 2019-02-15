@@ -49,7 +49,7 @@ namespace Juno.Tests
         }
         
         [Fact]
-        public void TestDetour()
+        public void TestAddDetour()
         {
             // Add the detour
             
@@ -60,6 +60,20 @@ namespace Juno.Tests
             // Remove the detour
             
             _functionDetour.RemoveDetour();
+        }
+        
+        [Fact]
+        public void TestRemoteDetour()
+        {
+            // Add the detour
+            
+            _functionDetour.AddDetour();
+            
+            // Remove the detour
+            
+            _functionDetour.RemoveDetour();
+            
+            Assert.Equal(15, _testClass.TestMethod(_testVariable1, _testVariable2));
         }
     }
 }
