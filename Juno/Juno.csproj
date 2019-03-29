@@ -7,6 +7,7 @@
         <Description>A Windows managed function detouring library written in C# that supports both x86 and x64 detours.</Description>
         <RepositoryUrl>https://github.com/Akaion/Juno</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
+        <Version>1.0.1</Version>
     </PropertyGroup>
 
 </Project>
