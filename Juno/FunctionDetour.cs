@@ -24,9 +24,14 @@ namespace Juno
 
         public FunctionDetour(MethodInfo sourceFunction, MethodInfo targetFunction)
         {
-            if (sourceFunction == null || targetFunction == null)
+            if (sourceFunction == null)
             {
-                throw new ArgumentException("One or more of the arguments provided was invalid");
+                throw new ArgumentNullException($"The parameter '{nameof(sourceFunction)}' can't be null!");
+            }
+
+            if (targetFunction == null)
+            {
+                throw new ArgumentNullException($"The parameter '{nameof(targetFunction)}' can't be null!");
             }
 
             InitialiseDetour(sourceFunction, targetFunction);
