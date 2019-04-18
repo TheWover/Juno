@@ -10,50 +10,71 @@ namespace Juno
 {
     public class FunctionDetour : IDetour
     {
+        private const BindingFlags BINDING_FLAGS = BindingFlags.FlattenHierarchy | 
+            BindingFlags.Instance | 
+            BindingFlags.NonPublic | 
+            BindingFlags.Public | 
+            BindingFlags.Static;
+
         private byte[] _detourBytes;
         
         private byte[] _originalBytes;
         
         private IntPtr _originalFunctionAddress;
 
-        public FunctionDetour(MethodInfo originalFunctionInfo, MethodInfo targetFunctionInfo)
+        public FunctionDetour(MethodInfo sourceFunction, MethodInfo targetFunction)
         {
-            if (originalFunctionInfo is null || targetFunctionInfo is null)
+            if (sourceFunction == null || targetFunction == null)
             {
                 throw new ArgumentException("One or more of the arguments provided was invalid");
             }
 
-            InitialiseDetour(originalFunctionInfo, targetFunctionInfo);
+            InitialiseDetour(sourceFunction, targetFunction);
         }
 
-        public FunctionDetour(IReflect originalClassType, string originalFunctionName, IReflect targetClassType, string targetFunctionName)
+        public FunctionDetour(IReflect sourceClassType, string sourceFuncName, IReflect targetClassType, string targetFuncName = "")
         {
             // Ensure the arguments passed in are valid
 
-            if (string.IsNullOrWhiteSpace(originalFunctionName) || string.IsNullOrWhiteSpace(targetFunctionName))
+            if (string.IsNullOrWhiteSpace(sourceFuncName))
             {
-                throw new ArgumentException("One or more of the arguments provided was invalid");
+                throw new ArgumentException($"The parameter '{nameof(sourceFuncName)}' can't be null / empty or whitespace!");
+            }
+
+            if (string.IsNullOrWhiteSpace(targetFuncName))
+            {
+                targetFuncName = sourceFuncName;
+            }
+
+            if (sourceClassType == null)
+            {
+                throw new ArgumentNullException($"The parameter '{nameof(sourceClassType)}' can't be null!");
+            }
+
+            if (targetClassType == null)
+            {
+                throw new ArgumentNullException($"The parameter '{nameof(targetClassType)}' can't be null!");
             }
 
             // Get the information about the original function
 
-            var originalFunctionInfo = originalClassType.GetMethod(originalFunctionName, BindingFlags.FlattenHierarchy | BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static);
+            var sourceFunc = sourceClassType.GetMethod(sourceFuncName, BINDING_FLAGS);
 
-            if (originalFunctionInfo is null)
+            if (sourceFunc == null)
             {
-                throw new ArgumentException($"No function called {originalFunctionName} was found in the class {originalClassType}");
+                throw new InvalidOperationException($"Could not find function {sourceFuncName} in class {sourceClassType}");
             }
 
             // Get the information about the target function
 
-            var targetFunctionInfo = targetClassType.GetMethod(targetFunctionName, BindingFlags.FlattenHierarchy | BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static);
+            var targetFunc = targetClassType.GetMethod(targetFuncName, BINDING_FLAGS);
 
-            if (targetFunctionInfo is null)
+            if (targetFunc == null)
             {
-                throw new ArgumentException($"No function called {targetFunctionName} was found in the class {targetClassType}");
+                throw new InvalidOperationException($"Could not find function {targetFuncName} in class {targetClassType}");
             }
 
-            InitialiseDetour(originalFunctionInfo, targetFunctionInfo);
+            InitialiseDetour(sourceFunc, targetFunc);
         }
 
         private void InitialiseDetour(MethodInfo originalFunctionInfo, MethodInfo targetFunctionInfo)
