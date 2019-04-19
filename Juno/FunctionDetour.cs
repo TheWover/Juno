@@ -70,11 +70,6 @@ namespace Juno
                 throw new InvalidOperationException($"Could not find function '{sourceFuncName}' in class {sourceClassType}!");
             }
 
-            if (sourceFunc.MethodImplementationFlags != MethodImplAttributes.NoInlining)
-            {
-                throw new InvalidOperationException($"The function {sourceFuncName} must be decorated with the NoInlining attribute.");
-            }
-
             // Get the information about the target function
 
             var targetFunc = targetClassType.GetMethod(targetFuncName, MethodBindingFlags);
