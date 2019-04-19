@@ -34,6 +34,11 @@ namespace Juno
                 throw new ArgumentNullException($"The parameter '{nameof(targetFunctionInfo)}' can't be null!");
             }
 
+            if (targetFunctionInfo.MethodImplementationFlags != MethodImplAttributes.NoInlining)
+            {
+                throw new InvalidOperationException($"The function {targetFunctionInfo.Name} must be decorated with the NoInlining attribute.");
+            }
+
             InitialiseDetour(originalFunctionInfo, targetFunctionInfo);
         }
 
