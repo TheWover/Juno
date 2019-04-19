@@ -67,7 +67,12 @@ namespace Juno
 
             if (sourceFunc == null)
             {
-                throw new InvalidOperationException($"Could not find function {sourceFuncName} in class {sourceClassType}");
+                throw new InvalidOperationException($"Could not find function '{sourceFuncName}' in class {sourceClassType}!");
+            }
+
+            if (sourceFunc.MethodImplementationFlags != MethodImplAttributes.NoInlining)
+            {
+                throw new InvalidOperationException($"The function {sourceFuncName} must be decorated with the NoInlining attribute.");
             }
 
             // Get the information about the target function
@@ -76,7 +81,12 @@ namespace Juno
 
             if (targetFunc == null)
             {
-                throw new InvalidOperationException($"Could not find function {targetFuncName} in class {targetClassType}");
+                throw new InvalidOperationException($"Could not find function '{targetFuncName}' in class {targetClassType}!");
+            }
+
+            if (targetFunc.MethodImplementationFlags != MethodImplAttributes.NoInlining)
+            {
+                throw new InvalidOperationException($"The function {targetFuncName} must be decorated with the NoInlining attribute.");
             }
 
             InitialiseDetour(sourceFunc, targetFunc);
