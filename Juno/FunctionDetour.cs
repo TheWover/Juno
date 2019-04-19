@@ -10,7 +10,7 @@ namespace Juno
 {
     public class FunctionDetour : IDetour
     {
-        private const BindingFlags BINDING_FLAGS = BindingFlags.FlattenHierarchy | 
+        private const BindingFlags MethodBindingFlags = BindingFlags.FlattenHierarchy | 
             BindingFlags.Instance | 
             BindingFlags.NonPublic | 
             BindingFlags.Public | 
@@ -63,7 +63,7 @@ namespace Juno
 
             // Get the information about the original function
 
-            var sourceFunc = sourceClassType.GetMethod(sourceFuncName, BINDING_FLAGS);
+            var sourceFunc = sourceClassType.GetMethod(sourceFuncName, MethodBindingFlags);
 
             if (sourceFunc == null)
             {
@@ -77,7 +77,7 @@ namespace Juno
 
             // Get the information about the target function
 
-            var targetFunc = targetClassType.GetMethod(targetFuncName, BINDING_FLAGS);
+            var targetFunc = targetClassType.GetMethod(targetFuncName, MethodBindingFlags);
 
             if (targetFunc == null)
             {
