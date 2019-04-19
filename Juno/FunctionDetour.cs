@@ -22,38 +22,38 @@ namespace Juno
         
         private IntPtr _originalFunctionAddress;
 
-        public FunctionDetour(MethodInfo sourceFunction, MethodInfo targetFunction)
+        public FunctionDetour(MethodInfo originalFunctionInfo, MethodInfo targetFunctionInfo)
         {
-            if (sourceFunction == null)
+            if (originalFunctionInfo == null)
             {
-                throw new ArgumentNullException($"The parameter '{nameof(sourceFunction)}' can't be null!");
+                throw new ArgumentNullException($"The parameter '{nameof(originalFunctionInfo)}' can't be null!");
             }
 
-            if (targetFunction == null)
+            if (targetFunctionInfo == null)
             {
-                throw new ArgumentNullException($"The parameter '{nameof(targetFunction)}' can't be null!");
+                throw new ArgumentNullException($"The parameter '{nameof(targetFunctionInfo)}' can't be null!");
             }
 
-            InitialiseDetour(sourceFunction, targetFunction);
+            InitialiseDetour(originalFunctionInfo, targetFunctionInfo);
         }
 
-        public FunctionDetour(IReflect sourceClassType, string sourceFuncName, IReflect targetClassType, string targetFuncName = "")
+        public FunctionDetour(IReflect originalClassType, string originalFunctionName, IReflect targetClassType, string targetFunctionName)
         {
             // Ensure the arguments passed in are valid
 
-            if (string.IsNullOrWhiteSpace(sourceFuncName))
+            if (string.IsNullOrWhiteSpace(originalFunctionName))
             {
-                throw new ArgumentException($"The parameter '{nameof(sourceFuncName)}' can't be null / empty or whitespace!");
+                throw new ArgumentException($"The parameter '{nameof(originalFunctionName)}' can't be null / empty or whitespace!");
             }
 
-            if (string.IsNullOrWhiteSpace(targetFuncName))
+            if (string.IsNullOrWhiteSpace(targetFunctionName))
             {
-                targetFuncName = sourceFuncName;
+                throw new ArgumentException($"The parameter '{nameof(targetFunctionName)}' can't be null / empty or whitespace!");
             }
 
-            if (sourceClassType == null)
+            if (originalClassType == null)
             {
-                throw new ArgumentNullException($"The parameter '{nameof(sourceClassType)}' can't be null!");
+                throw new ArgumentNullException($"The parameter '{nameof(originalClassType)}' can't be null!");
             }
 
             if (targetClassType == null)
@@ -63,28 +63,28 @@ namespace Juno
 
             // Get the information about the original function
 
-            var sourceFunc = sourceClassType.GetMethod(sourceFuncName, MethodBindingFlags);
+            var originalFunctionInfo = originalClassType.GetMethod(originalFunctionName, MethodBindingFlags);
 
-            if (sourceFunc == null)
+            if (originalFunctionInfo == null)
             {
-                throw new InvalidOperationException($"Could not find function '{sourceFuncName}' in class {sourceClassType}!");
+                throw new InvalidOperationException($"Could not find function '{originalFunctionName}' in class {originalClassType}!");
             }
 
             // Get the information about the target function
 
-            var targetFunc = targetClassType.GetMethod(targetFuncName, MethodBindingFlags);
+            var targetFunctionInfo = targetClassType.GetMethod(targetFunctionName, MethodBindingFlags);
 
-            if (targetFunc == null)
+            if (targetFunctionInfo == null)
             {
-                throw new InvalidOperationException($"Could not find function '{targetFuncName}' in class {targetClassType}!");
+                throw new InvalidOperationException($"Could not find function '{targetFunctionName}' in class {targetClassType}!");
             }
 
-            if (targetFunc.MethodImplementationFlags != MethodImplAttributes.NoInlining)
+            if (targetFunctionInfo.MethodImplementationFlags != MethodImplAttributes.NoInlining)
             {
-                throw new InvalidOperationException($"The function {targetFuncName} must be decorated with the NoInlining attribute.");
+                throw new InvalidOperationException($"The function {targetFunctionName} must be decorated with the NoInlining attribute.");
             }
 
-            InitialiseDetour(sourceFunc, targetFunc);
+            InitialiseDetour(originalFunctionInfo, targetFunctionInfo);
         }
 
         private void InitialiseDetour(MethodInfo originalFunctionInfo, MethodInfo targetFunctionInfo)
